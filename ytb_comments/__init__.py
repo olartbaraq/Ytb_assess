@@ -4,6 +4,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from redis import Redis
 import os
+from flask_cors import CORS
 
 # Load .env file auyomatically
 load_dotenv()
@@ -14,6 +15,9 @@ limiter = Limiter(
     default_limits=["200 per day", "50 per hour"],  # Example default limits
     storage_uri=os.getenv("REDIS_URI"),
 )
+
+# initialize cors origin
+cors = CORS()
 
 
 def create_app():
@@ -30,6 +34,9 @@ def create_app():
 
     # load limiter into app
     limiter.init_app(app)
+
+    # Load cors into app
+    cors.init_app(app)
 
     from .all_routes import bp  # Import the blueprint
 
