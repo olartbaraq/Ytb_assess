@@ -5,26 +5,30 @@ from flask_limiter.util import get_remote_address
 from redis import Redis
 import os
 
+# Load .env file auyomatically
 load_dotenv()
 
+# initialize Rate Limiter instance
 limiter = Limiter(
     get_remote_address,
     default_limits=["200 per day", "50 per hour"],  # Example default limits
-    storage_uri="rediss://red-cqvm6vbtq21c7384431g:qYrmxOQPKJ3IQjUTOLGXHoTUsPmUuWG2@oregon-redis.render.com:6379",
+    storage_uri=os.getenv("REDIS_URI"),
 )
 
 
 def create_app():
+    # Initialize Flask APP
     app = Flask(__name__)
 
-    redis_conn = Redis(
-        host="oregon-redis.render.com",
-        port=6379,
-        password="qYrmxOQPKJ3IQjUTOLGXHoTUsPmUuWG2",
-        username="red-cqvm6vbtq21c7384431g",
+    # Initialize Redis Client
+    Redis(
+        host=os.getenv("REDIS_HOST"),
+        port=os.getenv("REDIS_PORT"),
+        password=os.getenv("REDIS_PASSWORD"),
+        username=os.getenv("REDIS_USERNAME"),
     )
 
-    # Initialize Flask-Limiter with default limits
+    # load limiter into app
     limiter.init_app(app)
 
     from .all_routes import bp  # Import the blueprint

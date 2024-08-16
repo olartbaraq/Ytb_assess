@@ -61,7 +61,7 @@ async def fetch_video_statistics(client, video_id, token=None):
         return {"error": f"An error occurred: {error}"}
 
 
-# Custom error handler for rate limit exceeded
+# Custom error handler and json response for rate limit exceeded
 @bp.errorhandler(429)
 def ratelimit_error(e):
     logger.info("Rate limit exceeded.")
@@ -77,7 +77,7 @@ def ratelimit_error(e):
 
 
 @bp.route("/get_video_details", methods=["POST"])
-# @limiter.limit("100/day;15/hour;3/minute")
+@limiter.limit("100/day;15/hour;3/minute")
 async def home_page():
 
     data = request.get_json()
