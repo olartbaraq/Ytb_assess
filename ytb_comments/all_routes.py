@@ -77,7 +77,7 @@ def ratelimit_error(e):
 
 
 @bp.route("/get_video_details", methods=["POST"])
-@limiter.limit("100/day;15/hour;3/minute")
+@limiter.limit("120/day;20/hour;5/minute")
 async def home_page():
 
     data = request.get_json()
@@ -128,9 +128,7 @@ async def home_page():
             return jsonify({"error": "An internal error occurred"}), 500
 
         if "error" in overall_resp:
-            logger.warning(
-                f"Error in fetching comments: {overall_resp['comments']['error']}"
-            )
+            logger.warning(f"Error in fetching comments: {overall_resp['error']}")
             return jsonify(overall_resp), 400
         if "error" in video_statistics_resp:
             logger.warning(
